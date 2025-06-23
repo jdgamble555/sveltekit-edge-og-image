@@ -1,7 +1,6 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import sharp from 'sharp';
-
+import { Resvg } from '@resvg/resvg-js';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
@@ -52,9 +51,14 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const svgBuffer = Buffer.from(svg);
 
-    const png = sharp(svgBuffer).png().toBuffer();
+    const png = new Resvg(svgBuffer, {
+        fitTo: {
+            mode: 'width',
+            value: options.width || 1200
+        }
+    })
 
-    const pngBuffer = await png;
+    const pngBuffer = png.render().asPng();
 
     return pngBuffer;
 };
