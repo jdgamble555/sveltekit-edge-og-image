@@ -92,11 +92,8 @@ export class ImageResponse<T extends Record<string, unknown>> extends Response {
 
         return new Response(body, {
             headers: {
-                'Content-Type': 'image/png',
-                'Cache-Control': options.debug
-                    ? 'no-cache, no-store'
-                    : 'public, immutable, no-transform, max-age=31536000',
-                ...options.headers,
+                'content-type': 'image/png',
+                'cache-control': 'public, immutable, no-transform, max-age=31536000'
             },
             status: options.status || 200,
             statusText: options.statusText,
