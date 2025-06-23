@@ -1,6 +1,6 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import { Resvg } from '@resvg/resvg-js';
+import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
@@ -18,10 +18,21 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
+import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
+import { getRequestEvent } from '$app/server';
+
+
+
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
     options: ImageResponseOptions,
 ) => {
+
+    const { fetch } = getRequestEvent();
+
+    const wasmResponse = await fetch(wasmUrl);
+    const wasmBuffer = await wasmResponse.arrayBuffer();
+    await initWasm(wasmBuffer);
 
     const { text, spanText } = options;
 
@@ -33,11 +44,11 @@ export const generateImage = async <T extends Record<string, unknown>>(
     const fontData: ArrayBuffer = await fontFile.arrayBuffer();
 
     options.fonts = [
-      {
-        name: 'Inter Latin',
-        data: fontData,
-        style: 'normal',
-      },
+        {
+            name: 'Inter Latin',
+            data: fontData,
+            style: 'normal',
+        },
     ];
 
     const elementHtml = toReactElement(renderedSvelte.body);
@@ -56,7 +67,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
             mode: 'width',
             value: options.width || 1200
         }
-    })
+    });
 
     const pngBuffer = png.render().asPng();
 
