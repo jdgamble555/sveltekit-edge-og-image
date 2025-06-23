@@ -21,7 +21,7 @@ export interface ImageResponseOptions {
 import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 import { getRequestEvent } from '$app/server';
 
-
+let wasmInitialized = false;
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -30,9 +30,12 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
-    const wasmResponse = await fetch(wasmUrl);
-    const wasmBuffer = await wasmResponse.arrayBuffer();
-    await initWasm(wasmBuffer);
+    if (!wasmInitialized) {
+        const wasmResponse = await fetch(wasmUrl);
+        const wasmBuffer = await wasmResponse.arrayBuffer();
+        await initWasm(wasmBuffer);
+        wasmInitialized = true;
+    }
 
     const { text, spanText } = options;
 
