@@ -1,7 +1,7 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import { initWasm, Resvg } from '@resvg/resvg-wasm';
-import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
+import { Resvg } from '@cf-wasm/resvg';
+//import wasmUrl from '@cf-wasm/resvg/index_bg.wasm?url';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
@@ -22,7 +22,7 @@ export interface ImageResponseOptions {
 }
 
 
-let wasmInitialized = false;
+//let wasmInitialized = false;
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -31,11 +31,13 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
+    /*
     if (!wasmInitialized) {
         const wasmResponse = await fetch(wasmUrl);
         await initWasm(wasmResponse);
         wasmInitialized = true;
     }
+        */
 
     const { text, spanText } = options;
 
