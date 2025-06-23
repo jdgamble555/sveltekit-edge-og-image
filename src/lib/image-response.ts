@@ -33,8 +33,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     if (!wasmInitialized) {
         const wasmResponse = await fetch(wasmUrl);
-        const wasmBuffer = await wasmResponse.arrayBuffer();
-        await initWasm(wasmBuffer);
+        await initWasm(wasmResponse);
         wasmInitialized = true;
     }
 

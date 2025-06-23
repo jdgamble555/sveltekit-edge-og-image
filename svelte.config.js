@@ -3,9 +3,11 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const config = {
 	preprocess: vitePreprocess(),
-	kit: { adapter: adapter({
-		runtime: 'edge'
-	}) }
+	kit: {
+		adapter: adapter({
+			runtime: 'edge'
+		})
+	}
 };
 
 export default config;
