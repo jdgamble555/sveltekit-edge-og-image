@@ -1,9 +1,12 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
+import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
+import { getRequestEvent } from '$app/server';
+
 
 export interface ImageResponseOptions {
     width?: number;
@@ -18,8 +21,6 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
-import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
-import { getRequestEvent } from '$app/server';
 
 let wasmInitialized = false;
 
