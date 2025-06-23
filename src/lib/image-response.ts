@@ -1,6 +1,6 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import { Resvg } from '@cf-wasm/resvg';
+import { Resvg } from '@cf-wasm/resvg/next';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
@@ -19,6 +19,7 @@ export interface ImageResponseOptions {
     headers?: Record<string, string>;
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
+
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
