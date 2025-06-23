@@ -1,17 +1,87 @@
-import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
+import satori from 'satori';
+import { html as toReactElement } from 'satori-html';
+import sharp from 'sharp';
+
+import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
-import { html } from 'satori-html';
 import { render } from 'svelte/server';
 
+export interface ImageResponseOptions {
+    width?: number;
+    height?: number;
+    fonts?: SatoriOptions['fonts'];
+    debug?: boolean;
+    text?: string;
+    spanText?: string;
+    status?: number;
+    statusText?: string;
+    headers?: Record<string, string>;
+    tailwindConfig?: SatoriOptions['tailwindConfig'];
+}
 
-export class ImageResponse<T extends Record<string, unknown> = Record<string, unknown>> extends VercelOGImageResponse {
-    constructor(
-        component: Component<T>,
-        props?: T,
-        options?: ConstructorParameters<typeof VercelOGImageResponse>[1]        
-    ) {
-        const result = render(component as Component, ({ props }));
-        const element = html(result.body);
-        super(element, options);
+export const generateImage = async <T extends Record<string, unknown>>(
+    element: Component<T>,
+    options: ImageResponseOptions,
+) => {
+
+    const { text, spanText } = options;
+
+    const renderedSvelte = render(element as Component, { props: { text, spanText } });
+
+    const fontFile = await fetch(
+        'https://og-playground.vercel.app/inter-latin-ext-700-normal.woff',
+    );
+    const fontData: ArrayBuffer = await fontFile.arrayBuffer();
+
+    options.fonts = [
+      {
+        name: 'Inter Latin',
+        data: fontData,
+        style: 'normal',
+      },
+    ];
+
+    const elementHtml = toReactElement(renderedSvelte.body);
+
+    const svg = await satori(elementHtml, {
+        width: options.width || 1200,
+        height: options.height || 630,
+        fonts: options.fonts?.length ? options.fonts : [],
+        tailwindConfig: options.tailwindConfig,
+    });
+
+    const svgBuffer = Buffer.from(svg);
+
+    const png = sharp(svgBuffer).png().toBuffer();
+
+    const pngBuffer = await png;
+
+    return pngBuffer;
+};
+
+export class ImageResponse<T extends Record<string, unknown>> extends Response {
+
+    constructor(element: Component<T>, options: ImageResponseOptions = {}) {
+        super();
+
+        const body = new ReadableStream({
+            async start(controller) {
+                const buffer = await generateImage(element, options);
+                controller.enqueue(buffer);
+                controller.close();
+            },
+        });
+
+        return new Response(body, {
+            headers: {
+                'Content-Type': 'image/png',
+                'Cache-Control': options.debug
+                    ? 'no-cache, no-store'
+                    : 'public, immutable, no-transform, max-age=31536000',
+                ...options.headers,
+            },
+            status: options.status || 200,
+            statusText: options.statusText,
+        });
     }
 }
