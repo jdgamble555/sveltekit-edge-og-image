@@ -1,9 +1,11 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import { Resvg } from '@resvg/resvg-wasm';
+import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
+import { readFile } from 'node:fs/promises';
+import { resolvePath } from 'mlly';
 
 
 export interface ImageResponseOptions {
@@ -18,6 +20,14 @@ export interface ImageResponseOptions {
     headers?: Record<string, string>;
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
+
+
+export async function readWasmFile(input: string) {
+  const path = await resolvePath(input)
+  return readFile(path) // stackblitz provides fs
+}
+
+await initWasm(readWasmFile('@resvg/resvg-wasm/index_bg.wasm'));
 
 
 export const generateImage = async <T extends Record<string, unknown>>(
