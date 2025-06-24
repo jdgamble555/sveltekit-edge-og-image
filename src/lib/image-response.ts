@@ -5,7 +5,6 @@ import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
-import { getRequestEvent } from '$app/server';
 
 
 export interface ImageResponseOptions {
@@ -29,11 +28,8 @@ export const generateImage = async <T extends Record<string, unknown>>(
     options: ImageResponseOptions,
 ) => {
 
-    const { fetch } = getRequestEvent();
-
     if (!wasmInitialized) {
-        const wasmResponse = await fetch(wasmUrl);
-        await initWasm(wasmResponse);
+        await initWasm(wasmUrl);
         wasmInitialized = true;
     }
 
