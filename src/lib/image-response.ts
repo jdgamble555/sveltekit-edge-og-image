@@ -7,7 +7,7 @@ import { getRequestEvent } from '$app/server';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
 //import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
-import wasmInline from '@resvg/resvg-wasm/index_bg.wasm?inline';
+import wasmInline from '@resvg/resvg-wasm/index_bg.wasm?worker&inline';
 
 //import resvg_wasm from "$lib/index_bg.wasm?inline";
 
