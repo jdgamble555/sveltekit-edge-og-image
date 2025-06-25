@@ -26,6 +26,8 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
+let wasmInitialized = false;
+
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -35,21 +37,26 @@ export const generateImage = async <T extends Record<string, unknown>>(
     const { fetch } = getRequestEvent();
 
 
-    try {
-        //const wasmPath = process.cwd() + wasmUrl;
-        //const wasmBuffer = await fs.readFile(wasmPath);
+    if (!wasmInitialized) {
+        try {
+            //const wasmPath = process.cwd() + wasmUrl;
+            //const wasmBuffer = await fs.readFile(wasmPath);
 
-        const response = await fetch(wasmUrl);
-        const wasmBuffer = new Uint8Array(await response.arrayBuffer());
-        await initWasm(wasmBuffer);
+            const response = await fetch(wasmUrl);
+            const wasmBuffer = new Uint8Array(await response.arrayBuffer());
+            await initWasm(wasmBuffer);
 
-        //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
+            //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
 
-        //console.log(wasmModule);
-        //await initWasm(resvg_wasm);
-    } catch (e) {
-        console.error(e);
+            //console.log(wasmModule);
+            //await initWasm(resvg_wasm);
+
+            wasmInitialized = true;
+        } catch (e) {
+            console.error(e);
+        }
     }
+
 
     const { text, spanText } = options;
 
