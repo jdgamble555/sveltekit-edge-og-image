@@ -9,6 +9,8 @@ import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 import wasmInline from '@resvg/resvg-wasm/index_bg.wasm?inline';
 
+console.log(wasmInline);
+
 //import resvg_wasm from "$lib/index_bg.wasm?inline";
 
 //import fs from 'node:fs/promises';
