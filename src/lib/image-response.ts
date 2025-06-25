@@ -6,9 +6,9 @@ import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
-import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
+//import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 
-//import resvg_wasm from "./resvg.wasm?url";
+import resvg_wasm from "$lib/index_bg.wasm?inline";
 
 //import fs from 'node:fs/promises';
 
@@ -42,9 +42,9 @@ export const generateImage = async <T extends Record<string, unknown>>(
             //const wasmPath = process.cwd() + wasmUrl;
             //const wasmBuffer = await fs.readFile(wasmPath);
 
-            const response = await fetch(wasmUrl);
-            const wasmBuffer = new Uint8Array(await response.arrayBuffer());
-            await initWasm(wasmBuffer);
+            //const response = await fetch(wasmUrl);
+            //const wasmBuffer = new Uint8Array(await response.arrayBuffer());
+            await initWasm(resvg_wasm);
 
             //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
 
