@@ -1,11 +1,16 @@
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
-import { initWasm, Resvg } from '@resvg/resvg-wasm';
-import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?init'
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
+import { Resvg, initWasm } from '@resvg/resvg-wasm';
+//import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
+import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
+
+//import resvg_wasm from "./resvg.wasm?url";
+
+//import fs from 'node:fs/promises';
 
 
 export interface ImageResponseOptions {
@@ -29,8 +34,19 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
+
     try {
-        await initWasm(await import('@resvg/resvg-wasm').then(r => r.default));
+        //const wasmPath = process.cwd() + wasmUrl;
+        //const wasmBuffer = await fs.readFile(wasmPath);
+
+        const response = await fetch(wasmUrl);
+        const wasmBuffer = new Uint8Array(await response.arrayBuffer());
+        await initWasm(wasmBuffer);
+
+        //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
+
+        //console.log(wasmModule);
+        //await initWasm(resvg_wasm);
     } catch (e) {
         console.error(e);
     }
