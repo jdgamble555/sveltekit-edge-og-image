@@ -7,9 +7,10 @@ import { getRequestEvent } from '$app/server';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
 //import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
-//import wasmInline from '@resvg/resvg-wasm/index_bg.wasm?inline';
+//import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
+//import * as wasmInline from '@resvg/resvg-wasm/index_bg.wasm';
 
-import resvg_wasm from "$lib/index_bg.wasm?inline";
+import * as wasmModule from "$lib/index_bg.wasm?module";
 
 //import fs from 'node:fs/promises';
 
@@ -49,7 +50,8 @@ export const generateImage = async <T extends Record<string, unknown>>(
             //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
 
             //console.log(wasmModule);
-            await initWasm(resvg_wasm);
+
+            await initWasm(wasmModule);
 
             wasmInitialized = true;
         } catch (e) {
