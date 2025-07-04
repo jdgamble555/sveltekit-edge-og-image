@@ -6,7 +6,17 @@ const config = {
 	kit: {
 		adapter: adapter({
 			runtime: 'edge'
-		})
+		}),
+		csp: {
+			//...other options,
+			"directives": {
+				"script-src": [
+					"self'",
+					"blob:",
+					"'unsafe-eval'",
+				]
+			}
+		}
 	}
 };
 

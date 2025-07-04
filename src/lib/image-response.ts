@@ -8,7 +8,7 @@ import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
 //import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 //import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
-//import wasmModule from '@resvg/resvg-wasm/index_bg.wasm';
+import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?inline';
 
 //import wasmModule from "$lib/index_bg.wasm";
 
@@ -49,9 +49,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
             //const wasmModule = await import(/* @vite-ignore */ wasmUrl);
 
-            //console.log(wasmModule);
-
-            const wasmModule = await import('@resvg/resvg-wasm/index_bg.wasm');
+            //console.log(wasmModule);    
 
             await initWasm(wasmModule);
 
