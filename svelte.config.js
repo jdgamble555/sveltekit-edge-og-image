@@ -14,6 +14,9 @@ const config = {
 					"'unsafe-eval'",
 				]
 			}
+		},
+		csrf: {
+			checkOrigin: false
 		}
 	}
 };
