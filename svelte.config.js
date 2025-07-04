@@ -11,8 +11,14 @@ const config = {
 			//...other options,
 			"directives": {
 				"script-src": [
+					"self'",
+					"blob:",
 					"'unsafe-eval'",
-				]
+				],
+				reportOnly: {
+					'script-src': ['self'],
+					'report-uri': ['/']
+				}
 			}
 		},
 		csrf: {
