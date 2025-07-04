@@ -6,7 +6,6 @@ import wasm from 'vite-plugin-wasm';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasm()],
-	assetsInclude: ['**/*.wasm'],
 	test: {
 		projects: [
 			{
