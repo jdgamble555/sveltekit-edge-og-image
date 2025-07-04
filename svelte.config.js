@@ -8,12 +8,12 @@ const config = {
 			runtime: 'edge'
 		}),
 		csp: {
-			//...other options,
 			directives: {
 				"script-src": [
 					"self'",
 					"blob:",
 					"'unsafe-eval'",
+					"'unsafe-inline'"
 				],
 			},
 			reportOnly: {
