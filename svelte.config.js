@@ -9,16 +9,16 @@ const config = {
 		}),
 		csp: {
 			//...other options,
-			"directives": {
+			directives: {
 				"script-src": [
 					"self'",
 					"blob:",
 					"'unsafe-eval'",
 				],
-				reportOnly: {
-					'script-src': ['self'],
-					'report-uri': ['/']
-				}
+			},
+			reportOnly: {
+				'script-src': ['self'],
+				'report-uri': ['/']
 			}
 		},
 		csrf: {
