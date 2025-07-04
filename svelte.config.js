@@ -7,7 +7,14 @@ const config = {
 		adapter: adapter({
 			runtime: 'edge'
 		}),
-
+		csp: {
+			//...other options,
+			"directives": {
+				"script-src": [
+					"'unsafe-eval'",
+				]
+			}
+		}
 	}
 };
 
