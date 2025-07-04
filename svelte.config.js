@@ -11,8 +11,6 @@ const config = {
 			//...other options,
 			"directives": {
 				"script-src": [
-					"self'",
-					"blob:",
 					"'unsafe-eval'",
 				]
 			}
