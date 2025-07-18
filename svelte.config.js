@@ -6,24 +6,7 @@ const config = {
 	kit: {
 		adapter: adapter({
 			runtime: 'edge'
-		}),
-		csp: {
-			directives: {
-				"script-src": [
-					"self'",
-					"blob:",
-					"'unsafe-eval'",
-					"'unsafe-inline'"
-				],
-			},
-			reportOnly: {
-				'script-src': ['self'],
-				'report-uri': ['/']
-			}
-		},
-		csrf: {
-			checkOrigin: false
-		}
+		})
 	}
 };
 
