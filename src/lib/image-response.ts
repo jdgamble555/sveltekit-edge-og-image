@@ -10,9 +10,9 @@ import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
 
 // @ts-expect-error import wasm file normally
-import wasmModule from '@resvg/resvg-wasm/index_bg.wasm';
+//import wasmModule from '@resvg/resvg-wasm/index_bg.wasm';
 
-//import wasmModule from "$lib/index_bg.wasm";
+import wasmModule from "$lib/index_bg.wasm";
 
 //import fs from 'node:fs/promises';
 
