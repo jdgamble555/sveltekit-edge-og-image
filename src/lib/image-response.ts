@@ -4,11 +4,13 @@ import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-import { Resvg, initWasm } from '@resvg/resvg-wasm';
+//import { Resvg, initWasm } from '@resvg/resvg-wasm';
 //import wasmInit from '@resvg/resvg-wasm/index_bg.wasm?init'
 //import wasmUrl from '@resvg/resvg-wasm/index_bg.wasm?url';
 //import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
-import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?inline';
+//import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?inline';
+import { encode } from "@cf-wasm/png";
+import { PhotonImage, SamplingFilter, resize } from "@cf-wasm/photon";
 
 //import wasmModule from "$lib/index_bg.wasm";
 
@@ -51,7 +53,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
             //console.log(wasmModule);    
 
-            await initWasm(wasmModule);
+            //await initWasm(wasmModule);
 
             wasmInitialized = true;
         } catch (e) {
@@ -88,6 +90,9 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const svgBuffer = Buffer.from(svg);
 
+    const inputImage = PhotonImage.new_from_byteslice(new Uint8Array(svgBuffer));
+
+    /*
     const png = new Resvg(svgBuffer, {
         fitTo: {
             mode: 'width',
@@ -95,9 +100,29 @@ export const generateImage = async <T extends Record<string, unknown>>(
         }
     });
 
-    const pngBuffer = png.render().asPng();
 
-    return pngBuffer;
+    const pngBuffer = png.render().asPng();
+    */
+
+    const outputImage = resize(
+        inputImage,
+        inputImage.get_width() * 0.5,
+        inputImage.get_height() * 0.5,
+        SamplingFilter.Nearest
+    );
+
+    // encode using png
+    const outputBytes = encode(
+        outputImage.get_raw_pixels(),
+        outputImage.get_width(),
+        outputImage.get_height()
+    );
+
+    // call free() method to free memory
+    inputImage.free();
+    outputImage.free();
+
+    return outputBytes;
 };
 
 export class ImageResponse<T extends Record<string, unknown>> extends Response {
