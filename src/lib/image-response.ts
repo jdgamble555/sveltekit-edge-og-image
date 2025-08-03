@@ -5,7 +5,7 @@ import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
 import { Resvg, initWasm } from '@resvg/resvg-wasm';
-import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?module';
+import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?inline';
 
 
 export interface ImageResponseOptions {
