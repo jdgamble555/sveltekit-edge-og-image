@@ -80,10 +80,10 @@ export const generateImage = async <T extends Record<string, unknown>>(
         tailwindConfig: options.tailwindConfig,
     });
 
-    const svgBuffer = Buffer.from(svg);
+    //const svgBuffer = Buffer.from(svg);
 
 
-    const png = new Resvg(svgBuffer, {
+    const png = new Resvg(svg, {
         fitTo: {
             mode: 'width',
             value: options.width || 1200
