@@ -6,7 +6,7 @@ import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 
-import wasmModule from '$lib/index_bg.wasm?module';
+import wasmImport from '$lib/index_bg.wasm?module';
 
 export interface ImageResponseOptions {
     width?: number;
@@ -24,14 +24,19 @@ export interface ImageResponseOptions {
 
 let ready: Promise<void> | null = null;
 
-function ensureWasm() {
+function ensureWasm(absUrlFromReq: string) {
     if (!ready) {
-        // Debug guard: if this ever logs, your import is wrong (likely a URL string).
-        if (typeof wasmModule !== 'object' || !(wasmModule instanceof WebAssembly.Module)) {
-            console.error('wasmModule typeof:', typeof wasmModule, 'value:', wasmModule);
-            throw new Error('Expected WebAssembly.Module from ?module import, got something else');
+        if (wasmImport instanceof WebAssembly.Module) {
+            // PRODUCTION on Vercel Edge (with the wasm plugin): module path
+            ready = initWasm(wasmImport);
+        } else if (typeof wasmImport === 'string') {
+            // DEV: Vite returns a URL string (e.g. "/src/lib/resvg.wasm?module")
+            // Make it absolute using the current request URL, then init with that URL.
+            const abs = new URL(wasmImport, absUrlFromReq).toString();
+            ready = initWasm(abs);
+        } else {
+            throw new Error('Unexpected WASM import type');
         }
-        ready = initWasm(wasmModule);
     }
     return ready;
 }
@@ -43,10 +48,10 @@ export const generateImage = async <T extends Record<string, unknown>>(
     options: ImageResponseOptions,
 ) => {
 
-    const { fetch } = getRequestEvent();
+    const { fetch, url } = getRequestEvent();
 
 
-    await ensureWasm();
+    await ensureWasm(url.toString());
 
 
     const { text, spanText } = options;
