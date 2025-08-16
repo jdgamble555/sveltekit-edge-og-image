@@ -4,9 +4,9 @@ import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-import { Resvg, initWasm } from '@resvg/resvg-wasm';
-import wasmModule from '@resvg/resvg-wasm/index_bg.wasm?inline';
+import { initWasm, Resvg } from '@resvg/resvg-wasm';
 
+import wasmBytes from '@resvg/resvg-wasm/index_bg.wasm?arraybuffer';
 
 export interface ImageResponseOptions {
     width?: number;
@@ -21,7 +21,14 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
-let wasmInitialized = false;
+
+let wasmReady: Promise<void> | null = null;
+function ensureWasm() {
+    if (!wasmReady) wasmReady = initWasm(wasmBytes);
+    return wasmReady;
+}
+
+
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -31,17 +38,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
     const { fetch } = getRequestEvent();
 
 
-    if (!wasmInitialized) {
-        try { 
-
-            await initWasm(wasmModule);
-
-            wasmInitialized = true;
-
-        } catch (e) {
-            console.error(e);
-        }
-    }
+    await ensureWasm();
 
 
     const { text, spanText } = options;
@@ -72,7 +69,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const svgBuffer = Buffer.from(svg);
 
-    
+
     const png = new Resvg(svgBuffer, {
         fitTo: {
             mode: 'width',
@@ -81,7 +78,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
     });
 
     const pngBuffer = png.render().asPng();
-    
+
     return pngBuffer;
 };
 

@@ -3,9 +3,10 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
+import arraybuffer from "vite-plugin-arraybuffer";
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasm()],
+	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasm(), arraybuffer()],
 	assetsInclude: ['**/*.wasm'],
 	test: {
 		projects: [
