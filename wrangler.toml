@@ -1,0 +1,6 @@
+name = "svg2png"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_date = "2025-08-16"
+
+[wasm_modules]
+RESVG_WASM = "node_modules/@resvg/resvg-wasm/index_bg.wasm"
