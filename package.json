@@ -25,6 +25,7 @@
 		"@playwright/test": "^1.49.1",
 		"@resvg/resvg-js": "^2.6.2",
 		"@resvg/resvg-wasm": "^2.6.2",
+		"@sveltejs/adapter-cloudflare": "^7.2.1",
 		"@sveltejs/adapter-vercel": "^5.8.0",
 		"@sveltejs/kit": "^2.25.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
