@@ -6,7 +6,7 @@ import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 
-import wasmBytes from '@resvg/resvg-wasm/index_bg.wasm?arraybuffer';
+import wasmMod from '$lib/index_bg.wasm?module';
 
 export interface ImageResponseOptions {
     width?: number;
@@ -24,7 +24,7 @@ export interface ImageResponseOptions {
 
 let wasmReady: Promise<void> | null = null;
 function ensureWasm() {
-    if (!wasmReady) wasmReady = initWasm(wasmBytes);
+    if (!wasmReady) wasmReady = initWasm(wasmMod);
     return wasmReady;
 }
 
