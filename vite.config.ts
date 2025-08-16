@@ -36,5 +36,13 @@ export default defineConfig({
 				}
 			}
 		]
+	},
+	ssr: {
+		// Ensure the wasm import stays bundled so ?module works in the server build
+		noExternal: ['@resvg/resvg-wasm']
+	},
+	optimizeDeps: {
+		// Avoid pre-bundling that could turn the wasm import back into a URL
+		exclude: ['@resvg/resvg-wasm']
 	}
 });

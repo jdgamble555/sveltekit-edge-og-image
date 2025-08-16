@@ -6,7 +6,7 @@ import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
 import { initWasm, Resvg } from '@resvg/resvg-wasm';
 
-import wasmMod from '$lib/index_bg.wasm?module';
+import wasmModule from '$lib/index_bg.wasm?module';
 
 export interface ImageResponseOptions {
     width?: number;
@@ -22,10 +22,18 @@ export interface ImageResponseOptions {
 }
 
 
-let wasmReady: Promise<void> | null = null;
+let ready: Promise<void> | null = null;
+
 function ensureWasm() {
-    if (!wasmReady) wasmReady = initWasm(wasmMod);
-    return wasmReady;
+    if (!ready) {
+        // Debug guard: if this ever logs, your import is wrong (likely a URL string).
+        if (typeof wasmModule !== 'object' || !(wasmModule instanceof WebAssembly.Module)) {
+            console.error('wasmModule typeof:', typeof wasmModule, 'value:', wasmModule);
+            throw new Error('Expected WebAssembly.Module from ?module import, got something else');
+        }
+        ready = initWasm(wasmModule);
+    }
+    return ready;
 }
 
 
