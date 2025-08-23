@@ -3,11 +3,11 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
-//import arraybuffer from "vite-plugin-arraybuffer";
+import wasmModuleWorkers from 'vite-plugin-wasm-module-workers'
 import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), topLevelAwait(), wasm()],
+	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), topLevelAwait(), wasm(), wasmModuleWorkers()],
 	assetsInclude: ['**/*.wasm'],
 	test: {
 		projects: [

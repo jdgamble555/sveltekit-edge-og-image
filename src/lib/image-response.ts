@@ -4,7 +4,9 @@ import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-import { Resvg } from "@cf-wasm/resvg";
+import { Resvg, initWasm as initResvg } from '@resvg/resvg-wasm';
+
+import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url'
 
 
 export interface ImageResponseOptions {
@@ -20,6 +22,8 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
+let initialised = false;
+
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -27,6 +31,20 @@ export const generateImage = async <T extends Record<string, unknown>>(
 ) => {
 
     const { fetch } = getRequestEvent();
+
+
+    const { default: resvgwasm } = await import(
+    /* @vite-ignore */ `${RESVG_WASM}?module`
+    );
+    
+    try {
+        if (!initialised) {
+            await initResvg(resvgwasm);
+            initialised = true;
+        }
+    } catch {
+        initialised = true;
+    }
 
     const { text, spanText } = options;
 
@@ -53,9 +71,6 @@ export const generateImage = async <T extends Record<string, unknown>>(
         fonts: options.fonts?.length ? options.fonts : [],
         tailwindConfig: options.tailwindConfig,
     });
-
-    //const svgBuffer = Buffer.from(svg);
-
 
     const png = new Resvg(svg, {
         fitTo: {
