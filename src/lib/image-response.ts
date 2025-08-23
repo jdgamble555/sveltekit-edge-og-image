@@ -4,11 +4,8 @@ import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-import { initWasm, Resvg } from '@resvg/resvg-wasm';
+import { Resvg } from "@cf-wasm/resvg";
 
-//import wasmImport from '@resvg/resvg-wasm/index_bg.wasm?module';
-
-type Env = { RESVG_WASM: WebAssembly.Module };
 
 export interface ImageResponseOptions {
     width?: number;
@@ -24,24 +21,12 @@ export interface ImageResponseOptions {
 }
 
 
-let ready: Promise<void> | null = null;
-function ensureWasm(mod: WebAssembly.Module) {
-    if (!ready) ready = initWasm(mod);   // <-- pass the Module, not bytes/URL
-    return ready;
-}
-
-
-
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
     options: ImageResponseOptions,
 ) => {
 
-    const { fetch, platform } = getRequestEvent();
-
-    const env = (platform as unknown as { env?: Env })?.env;
-    if (!env?.RESVG_WASM) return new Response('RESVG_WASM missing', { status: 500 });
-    await ensureWasm(env.RESVG_WASM);
+    const { fetch } = getRequestEvent();
 
     const { text, spanText } = options;
 
