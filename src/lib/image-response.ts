@@ -1,12 +1,13 @@
+import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?init'
+
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
 import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-//import { initWasm as initResvg } from '@resvg/resvg-wasm';
+import { Resvg, initWasm } from '@resvg/resvg-wasm';
 
-//import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url'
 
 
 export interface ImageResponseOptions {
@@ -22,6 +23,8 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
+let initialized = false;
+
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -30,20 +33,17 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
-    /*
-    const { default: resvgwasm } = await import(
-    `${RESVG_WASM}?module`
-    );
-    
     try {
-        if (!initialised) {
-            await initResvg(resvgwasm);
-            initialised = true;
+        if (!initialized) {
+            const w = await RESVG_WASM();
+            await initWasm(w);
+            initialized = true;
         }
-    } catch {
-        initialised = true;
+    } catch (e) {
+        console.error(e);
+        initialized = true;
     }
-    */
+
 
     const { text, spanText } = options;
 
@@ -71,20 +71,22 @@ export const generateImage = async <T extends Record<string, unknown>>(
         tailwindConfig: options.tailwindConfig,
     });
 
-    const new_svg=  svg.toString();
+    const new_svg = svg.toString();
 
-    return new_svg;
+    try {
+        const png = new Resvg(new_svg, {
+            fitTo: {
+                mode: 'width',
+                value: options.width || 1200
+            }
+        });
 
-    /* const png = new Resvg(svg, {
-        fitTo: {
-            mode: 'width',
-            value: options.width || 1200
-        }
-    });
+        const pngBuffer = png.render().asPng();
 
-    const pngBuffer = png.render().asPng();
-
-    return pngBuffer;*/
+        return pngBuffer;
+    } catch (e) {
+        console.error('Resvg error:', e);
+    }
 };
 
 export class ImageResponse<T extends Record<string, unknown>> extends Response {
@@ -102,7 +104,7 @@ export class ImageResponse<T extends Record<string, unknown>> extends Response {
 
         return new Response(body, {
             headers: {
-                'content-type': 'image/svg+xml; charset=utf-8',
+                'content-type': 'image/png',
                 'cache-control': 'public, immutable, no-transform, max-age=31536000'
             },
             status: options.status || 200,

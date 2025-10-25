@@ -5,10 +5,12 @@
 
 declare global {
 
+	/*
 	declare module '*.wasm?module' {
 		const wasm: ArrayBuffer
 		export default wasm
 	}
+	*/
 
 	namespace App {
 		// interface Error {}
