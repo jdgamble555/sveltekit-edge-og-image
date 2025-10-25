@@ -1,0 +1,13 @@
+diff --git a/node_modules/@vercel/og/dist/index.edge.js b/node_modules/@vercel/og/dist/index.edge.js
+index e3cb870..0685d4e 100644
+--- a/node_modules/@vercel/og/dist/index.edge.js
++++ b/node_modules/@vercel/og/dist/index.edge.js
+@@ -20529,7 +20529,7 @@ async function render(satori, resvg, opts, defaultFonts, element) {
+ // src/index.edge.ts
+ var initializedResvg = initWasm(resvg_wasm);
+ var fallbackFont = fetch(
+-  new URL("./noto-sans-v27-latin-regular.ttf", import.meta.url)
++  new URL("https://cdn.jsdelivr.net/fontsource/fonts/geist-sans@latest/latin-500-normal.woff", import.meta.url)
+ ).then((res) => res.arrayBuffer());
+ var ImageResponse = class extends Response {
+   constructor(element, options = {}) {
