@@ -16,8 +16,6 @@ export const GET = (async () => {
 	return new ImageResponse(
 		Card,
 		{
-			text: 'Ready to dive in?',
-			spanText: 'Start your free trial today.',
 			width,
 			height
 		}
