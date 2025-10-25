@@ -1,4 +1,3 @@
-
 import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
