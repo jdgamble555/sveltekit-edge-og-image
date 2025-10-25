@@ -1,8 +1,8 @@
 diff --git a/node_modules/@vercel/og/dist/index.edge.js b/node_modules/@vercel/og/dist/index.edge.js
-index e3cb870..1fcd10d 100644
+index e3cb870..559accb 100644
 --- a/node_modules/@vercel/og/dist/index.edge.js
 +++ b/node_modules/@vercel/og/dist/index.edge.js
-@@ -20528,14 +20528,14 @@ async function render(satori, resvg, opts, defaultFonts, element) {
+@@ -20528,9 +20528,11 @@ async function render(satori, resvg, opts, defaultFonts, element) {
  
  // src/index.edge.ts
  var initializedResvg = initWasm(resvg_wasm);
@@ -10,14 +10,10 @@ index e3cb870..1fcd10d 100644
 -  new URL("./noto-sans-v27-latin-regular.ttf", import.meta.url)
 -).then((res) => res.arrayBuffer());
 +async function getFallbackFont() {
++  // .bin is used so that a loader does not need to be configured for .ttf files
 +  return (await import("./noto-sans-v27-latin-regular.ttf.bin")).default;
 +}
++var fallbackFont = getFallbackFont();
  var ImageResponse = class extends Response {
    constructor(element, options = {}) {
      const result = new ReadableStream({
-       async start(controller) {
--        const [fontData] = await Promise.all([fallbackFont, initializedResvg]);
-+        const [fontData] = await Promise.all([getFallbackFont(), initializedResvg]);
-         const fonts = [
-           {
-             name: "sans serif",
