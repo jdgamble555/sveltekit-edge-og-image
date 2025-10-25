@@ -4,9 +4,9 @@ import type { SatoriOptions } from 'satori/wasm';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { getRequestEvent } from '$app/server';
-import { Resvg, initWasm as initResvg } from '@resvg/resvg-wasm';
+//import { initWasm as initResvg } from '@resvg/resvg-wasm';
 
-import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url'
+//import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url'
 
 
 export interface ImageResponseOptions {
@@ -22,8 +22,6 @@ export interface ImageResponseOptions {
     tailwindConfig?: SatoriOptions['tailwindConfig'];
 }
 
-let initialised = false;
-
 
 export const generateImage = async <T extends Record<string, unknown>>(
     element: Component<T>,
@@ -32,9 +30,9 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
-
+    /*
     const { default: resvgwasm } = await import(
-    /* @vite-ignore */ `${RESVG_WASM}?module`
+    `${RESVG_WASM}?module`
     );
     
     try {
@@ -45,6 +43,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
     } catch {
         initialised = true;
     }
+    */
 
     const { text, spanText } = options;
 
@@ -72,7 +71,11 @@ export const generateImage = async <T extends Record<string, unknown>>(
         tailwindConfig: options.tailwindConfig,
     });
 
-    const png = new Resvg(svg, {
+    const new_svg=  svg.toString();
+
+    return new_svg;
+
+    /* const png = new Resvg(svg, {
         fitTo: {
             mode: 'width',
             value: options.width || 1200
@@ -81,7 +84,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const pngBuffer = png.render().asPng();
 
-    return pngBuffer;
+    return pngBuffer;*/
 };
 
 export class ImageResponse<T extends Record<string, unknown>> extends Response {
@@ -99,7 +102,7 @@ export class ImageResponse<T extends Record<string, unknown>> extends Response {
 
         return new Response(body, {
             headers: {
-                'content-type': 'image/png',
+                'content-type': 'image/svg+xml; charset=utf-8',
                 'cache-control': 'public, immutable, no-transform, max-age=31536000'
             },
             status: options.status || 200,
