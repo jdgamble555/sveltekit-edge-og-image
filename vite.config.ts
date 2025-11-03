@@ -12,5 +12,12 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		devtoolsJson()
-	]
+	],
+	optimizeDeps: {
+		include: ['@vercel/og'],
+		force: true
+	},
+	ssr: {
+		noExternal: ['@vercel/og']
+	}
 });
