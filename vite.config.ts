@@ -8,6 +8,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	ssr: {
+		noExternal: ['@vercel/og']
+	},
 	test: {
 		projects: [
 			{
