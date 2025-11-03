@@ -22,29 +22,3 @@ index e3cb870..28794d8 100644
          const fonts = [
            {
              name: "sans serif",
-diff --git a/node_modules/@vercel/og/dist/index.node.js b/node_modules/@vercel/og/dist/index.node.js
-index 84c8e02..acf3a21 100644
---- a/node_modules/@vercel/og/dist/index.node.js
-+++ b/node_modules/@vercel/og/dist/index.node.js
-@@ -20530,9 +20530,10 @@ async function render(satori2, resvg, opts, defaultFonts, element) {
- 
- // src/index.node.ts
- var satori = Tl.default || Tl;
--var fontData = fs2.readFileSync(
--  fileURLToPath(new URL("./noto-sans-v27-latin-regular.ttf", import.meta.url))
--);
-+async function getFallbackFont() {
-+  const res = await fetch('https://cdn.jsdelivr.net/npm/@fontsource/noto-sans/files/noto-sans-latin-400-normal.woff');
-+  return res.arrayBuffer();
-+}
- var resvg_wasm = fs2.readFileSync(
-   fileURLToPath(new URL("./resvg.wasm", import.meta.url))
- );
-@@ -20547,6 +20548,7 @@ var ImageResponse = class extends Response {
-     const result = new ReadableStream({
-       async start(controller) {
-         await initializedResvg;
-+        const fontData = await getFallbackFont();
-         const fonts = [
-           {
-             name: "sans serif",
