@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build && mkdir -p .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets && cp -r .svelte-kit/output/client/_app/immutable/assets/*.wasm .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets/ 2>/dev/null || true",
+		"build": "vite build && svelte-kit build && sh -lc 'set -e; srcs=(.svelte-kit/output/client/_app/immutable/assets/*.wasm .svelte-kit/output/client/_app/immutable/chunks/*.wasm .svelte-kit/output/client/_app/immutable/*.wasm); copied=0; for s in \"${srcs[@]}\"; do for f in $s; do [ -e \"$f\" ] || continue; for d in .svelte-kit/output/server/entries/endpoints/og/_app/immutable/assets .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets; do mkdir -p \"$d\"; cp \"$f\" \"$d/\"; done; copied=1; done; done; [ $copied -eq 1 ] || true'",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
