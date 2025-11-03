@@ -8,7 +8,7 @@ import wasmModuleWorkers from 'vite-plugin-wasm-module-workers';
 //import wasmModuleVercel from './src/lib/wasm-module-vercel';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasmModuleWorkers()],
+	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 	ssr: {
 		// ⬅️ crucial: bundle the package so the plugin can transform its .wasm import
 		noExternal: ['@resvg/resvg-wasm']
