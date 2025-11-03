@@ -32,6 +32,8 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
+
+
     try {
         if (!initialized) {
             const { default: resvgwasm } = await import(
@@ -41,7 +43,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
             initialized = true;
         }
     } catch (e) {
-        console.error(e);
+        //console.error(e);
         initialized = true;
     }
 
