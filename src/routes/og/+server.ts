@@ -1,5 +1,5 @@
 import { type RequestHandler } from "@sveltejs/kit";
-import { ImageResponse } from "$lib/image-response-old";
+import { ImageResponse } from "$lib/image-response";
 import Card from "$lib/card.svelte";
 
 const width = 1600;
