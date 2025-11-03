@@ -9,6 +9,14 @@ import wasmModuleVercel from './src/lib/wasm-module-vercel';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasmModuleVercel()],
+	ssr: {
+		// ⬅️ crucial: bundle the package so the plugin can transform its .wasm import
+		noExternal: ['@resvg/resvg-wasm']
+	},
+	optimizeDeps: {
+		// optional: keep it out of pre-bundling; not required but avoids surprises
+		exclude: ['@resvg/resvg-wasm']
+	},
 	test: {
 		projects: [
 			{
