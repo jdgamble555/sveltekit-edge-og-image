@@ -1,4 +1,5 @@
-import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url';
+//import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url';
+import RESVG_WASM from '$lib/index_bg.wasm?url';
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
 import type { SatoriOptions } from 'satori/wasm';
@@ -32,8 +33,6 @@ export const generateImage = async <T extends Record<string, unknown>>(
 
     const { fetch } = getRequestEvent();
 
-
-
     try {
         if (!initialized) {
             const { default: resvgwasm } = await import(
@@ -43,7 +42,7 @@ export const generateImage = async <T extends Record<string, unknown>>(
             initialized = true;
         }
     } catch (e) {
-        //console.error(e);
+        console.error(e);
         initialized = true;
     }
 
