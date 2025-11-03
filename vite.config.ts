@@ -17,6 +17,7 @@ export default defineConfig({
 		// optional: keep it out of pre-bundling; not required but avoids surprises
 		exclude: ['@resvg/resvg-wasm']
 	},
+	assetsInclude: ['**/*.wasm?module', '**/*.wasm'],
 	test: {
 		projects: [
 			{

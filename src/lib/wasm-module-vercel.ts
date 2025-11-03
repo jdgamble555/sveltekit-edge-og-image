@@ -1,16 +1,17 @@
-// wasmModuleVercel.ts (only the changed parts)
+// wasmModuleVercel.ts
+// @ts-check
 import * as fs from 'fs';
 import * as path from 'path';
 import type { Plugin, ResolvedConfig } from 'vite';
+type LoadResult = string | null;
 
 export default function wasmModuleVercel(): Plugin {
-  const POSTFIX = '.wasm?module';
-  const VIRTUAL = '\0wasm:inline:';
+  const postfix = '.wasm?module';
   let isDev = false;
   let root = process.cwd();
 
   return {
-    name: 'vite:wasm-helper-inline',
+    name: 'vite:wasm-helper',
     enforce: 'pre',
 
     configResolved(config: ResolvedConfig) {
@@ -18,69 +19,44 @@ export default function wasmModuleVercel(): Plugin {
       root = config.root || root;
     },
 
-    async resolveId(source, importer) {
-      if (!source.endsWith(POSTFIX)) return null;
+    // You don't need the old external rule or renderChunk hack anymore.
+    // We’ll just handle ?module directly and always return bytes.
+    // If you still want externalize ?url variants for other imports, you can keep it.
+    // config() { return { build: { rollupOptions: { external: /.+\.wasm?url$/i } } } },
 
-      const raw = source.slice(0, -'?module'.length);
+    load(id: string): LoadResult {
+      if (!id.endsWith(postfix)) return null;
 
-      // 1) Try Vite's resolver (handles aliases/tsconfig paths/packages)
-      const r = await this.resolve(raw, importer, { skipSelf: true, tryIndex: true });
-      if (r?.id) return VIRTUAL + r.id;
+      // Resolve the actual file path for the source wasm
+      const filePath = id.slice(0, -'?module'.length);
 
-      // 2) Try Node resolution from project root (handles node_modules)
-      try {
-        // @ts-ignore -- require is available in Node at build time
-        const resolved = require.resolve(raw, { paths: [root] });
-        return VIRTUAL + resolved;
-      } catch {}
+      // Dev + Build: read bytes and inline as base64 → Uint8Array
+      // (No runtime fs/fetch on Edge)
+      const abs =
+        path.isAbsolute(filePath) ? filePath : path.resolve(root, filePath);
 
-      // 3) Fallback: project-root relative (last resort)
-      return VIRTUAL + path.resolve(root, raw);
-    },
-
-    load(id) {
-      if (!id.startsWith(VIRTUAL)) return null;
-
-      let filePath = id.slice(VIRTUAL.length);
-      if (filePath.endsWith('?module')) filePath = filePath.slice(0, -'?module'.length);
-
-      const exists = fs.existsSync(filePath);
-
-      if (isDev) {
-        if (!exists) {
-          this.error(
-            `wasm-helper-inline (dev): cannot read "${filePath}". ` +
-            `Check the import path to your source wasm (e.g. "@resvg/resvg-wasm/index_bg.wasm?module").`
-          );
-        }
-        return `
-          import fs from 'fs';
-          const buf = fs.readFileSync(${JSON.stringify(filePath)});
-          if (!buf || buf.length === 0) throw new Error('wasm-helper-inline: empty wasm bytes: ${filePath}');
-          export const wasmBytes = new Uint8Array(buf);
-          export default wasmBytes;
-        `;
+      if (!fs.existsSync(abs)) {
+        this.error(`vite:wasm-helper: cannot read wasm at "${abs}"`);
       }
 
-      if (!exists) {
-        this.error(`wasm-helper-inline (build): cannot read "${filePath}".`);
-      }
+      const b64 = fs.readFileSync(abs).toString('base64');
 
-      const b64 = fs.readFileSync(filePath).toString('base64');
       return `
         const b64 = "${b64}";
         function b64ToBytes(b){
           if (typeof atob === 'function') {
-            const bin = atob(b); const out = new Uint8Array(bin.length);
-            for (let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
-            return out;
+            const bin = atob(b);
+            const u = new Uint8Array(bin.length);
+            for (let i=0;i<bin.length;i++) u[i] = bin.charCodeAt(i);
+            return u;
           }
           return Uint8Array.from(globalThis.Buffer ? globalThis.Buffer.from(b,'base64') : []);
         }
-        export const wasmBytes = b64ToBytes(b64);
-        export async function initWasm(imports){ const mod = await WebAssembly.compile(wasmBytes); return WebAssembly.instantiate(mod, imports ?? {}); }
-        export default wasmBytes;
+        const wasmBytes = b64ToBytes(b64);
+        export default wasmBytes; // <-- Uint8Array for initWasm
+        export { wasmBytes };
       `;
-    }
+    },
   };
 }
+
