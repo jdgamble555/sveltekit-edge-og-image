@@ -15,14 +15,15 @@ export default defineConfig({
 	optimizeDeps: {
 		exclude: ['@vercel/og']
 	},
+	assetsInclude: ['**/*.ttf', '**/*.otf', '**/*.woff', '**/*.woff2'],
 	resolve: {
 		alias: {
-			// Redirect the font path used inside @vercel/og to your local font
+			// IMPORTANT: alias the literal the package uses
 			'./noto-sans-v27-latin-regular.ttf':
-				path.resolve('./static/fonts/noto-sans-v27-latin-regular.ttf'),
-			// In some versions, the package tries this full path too:
+				path.resolve('src/lib/assets/fonts/noto-sans-v27-latin-regular.ttf'),
+			// (sometimes the code references it without './' too — harmless to add)
 			'noto-sans-v27-latin-regular.ttf':
-				path.resolve('./static/fonts/noto-sans-v27-latin-regular.ttf')
+				path.resolve('src/lib/assets/fonts/noto-sans-v27-latin-regular.ttf')
 		}
 	},
 	test: {
