@@ -4,11 +4,6 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		vite: {
-			ssr: {
-				noExternal: ['@vercel/og']
-			}
-		},
 		adapter: adapter(),
 		csp: {
 			mode: 'auto',
