@@ -6,8 +6,9 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		csp: {
+			mode: 'auto',
 			directives: {
-				'script-src': ["'self'", 'blob:', "'unsafe-eval'"]
+				'script-src': ['self', 'blob:', 'unsafe-eval', 'wasm-unsafe-eval']
 			}
 		}
 	}
