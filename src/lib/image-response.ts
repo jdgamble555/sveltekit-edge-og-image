@@ -1,5 +1,5 @@
 //import RESVG_WASM from '@resvg/resvg-wasm/index_bg.wasm?url';
-import RESVG_WASM from './src/lib/index_bg.wasm?url';
+import RESVG_WASM from './index_bg.wasm?url';
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
 import type { SatoriOptions } from 'satori/wasm';
