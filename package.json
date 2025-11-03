@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "svelte-kit build && mkdir -p .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets && cp -r .svelte-kit/output/client/_app/immutable/assets/*.wasm .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets/ 2>/dev/null || true",
+		"build": "vite build && mkdir -p .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets && cp -r .svelte-kit/output/client/_app/immutable/assets/*.wasm .svelte-kit/vercel/entries/endpoints/og/_app/immutable/assets/ 2>/dev/null || true",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
