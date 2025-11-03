@@ -8,7 +8,7 @@ import { defineConfig } from 'vitest/config';
 import wasmModuleVercel from './src/lib/wasm-module-vercel';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	plugins: [tailwindcss(), sveltekit(), devtoolsJson(), wasmModuleVercel()],
 	ssr: {
 		// ⬅️ crucial: bundle the package so the plugin can transform its .wasm import
 		noExternal: ['@resvg/resvg-wasm']

@@ -1,122 +1,63 @@
 // @ts-check
-import * as fs from 'fs'
-import * as path from 'path'
-import type { Plugin, ResolvedConfig } from 'vite'
+import * as fs from 'fs';
+import * as path from 'path';
+import type { Plugin, ResolvedConfig } from 'vite';
 
-export default function wasmModuleVercel(): Plugin {
-  const POSTFIX = '.wasm?module'
-  const VIRTUAL = 'virtual:wasm-inline'
-  const RESOLVED = '\0' + VIRTUAL
-
-  let isDev = false
-  let root = process.cwd()
-  let pkgWasmPath: string | null = null
+export default function wasmModuleVercelEdge(): Plugin {
+  const MATCH = /\.(wasm)(\?(module|url))?$/i;
+  let root = process.cwd();
 
   return {
-    name: 'vite:wasm-helper',
+    name: 'vite:wasm-module-vercel-edge',
     enforce: 'pre',
 
     configResolved(cfg: ResolvedConfig) {
-      isDev = cfg.command === 'serve'
-      root = cfg.root || root
-      // Resolve resvg wasm once (package path)
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        pkgWasmPath = require.resolve('@resvg/resvg-wasm/index_bg.wasm', { paths: [root] })
-      } catch {
-        pkgWasmPath = null
-      }
+      root = cfg.root || root;
     },
 
-    /**
-     * Resolve any *.wasm?module (including emitted _app/immutable forms)
-     * to our virtual module so SSR never tries to import an asset path.
-     * If we know the actual file for this import, stash it in the meta id.
-     */
-    async resolveId(source, importer) {
-      if (source === VIRTUAL) return RESOLVED
+    async load(id) {
+      if (!MATCH.test(id)) return null;
 
-      if (source.endsWith(POSTFIX)) {
-        // Try to resolve the real file from the importer first
-        const raw = source.slice(0, -'?module'.length)
-        // 1) vite resolver (aliases/tsconfig)
-        if (importer && !source.startsWith('/_app/') && !source.includes('_app/immutable/')) {
-          const r = await this.resolve(raw, importer, { skipSelf: true })
-          if (r?.id) return RESOLVED + '::' + r.id
-        }
-        // 2) package fallback: @resvg/resvg-wasm
-        if (raw.includes('@resvg/resvg-wasm') && pkgWasmPath) {
-          return RESOLVED + '::' + pkgWasmPath
-        }
-        // 3) last resort: let load() find something
-        return RESOLVED
-      }
+      // Strip query (?module / ?url) and read bytes
+      const [fsId] = id.split('?');
+      const abs = path.isAbsolute(fsId) ? fsId : path.resolve(root, fsId);
+      const source = fs.readFileSync(abs);
 
-      // If an emitted SSR chunk still references _app/immutable/*.wasm?module
-      if (source.includes('_app/immutable/') && source.endsWith(POSTFIX)) {
-        // redirect to our virtual; actual file will be pkg fallback
-        return RESOLVED
-      }
+      // Tell Vite/Rollup to emit the wasm as an asset in the client build
+      const refId = this.emitFile({
+        type: 'asset',
+        name: path.basename(abs),
+        source
+      });
 
-      return null
-    },
-
-    /**
-     * Provide Uint8Array bytes. In dev: read from fs. In build: inline base64.
-     */
-    load(id) {
-      if (!id.startsWith(RESOLVED)) return null
-
-      // Optional file hint after '::'
-      const hint = id.includes('::') ? id.slice(id.indexOf('::') + 2) : null
-
-      let filePath: string | null = null
-
-      // Prefer the hinted path (resolved from importer)
-      if (hint && hint !== RESOLVED) {
-        const cleaned = hint.endsWith('?module') ? hint.slice(0, -'?module'.length) : hint
-        filePath = path.isAbsolute(cleaned) ? cleaned : path.resolve(root, cleaned)
-      }
-
-      // Fallback to package file
-      if (!filePath && pkgWasmPath) filePath = pkgWasmPath
-
-      // Final guard / local fallback (adjust if you keep a local wasm)
-      if (!filePath || !fs.existsSync(filePath)) {
-        const candidates = [
-          path.resolve(root, 'src/lib/index_bg.wasm'),
-          path.resolve(root, 'index_bg.wasm')
-        ].filter((p) => fs.existsSync(p))
-        filePath = candidates[0] || null
-      }
-
-      if (!filePath || !fs.existsSync(filePath)) {
-        this.error('vite:wasm-helper: cannot locate a source .wasm for *.wasm?module import')
-      }
-
-      const buf = fs.readFileSync(filePath)
-      if (buf.length === 0) {
-        this.error(`vite:wasm-helper: empty wasm at ${filePath}`)
-      }
-
-      const b64 = buf.toString('base64')
-
-      // dev & build: always export bytes; Node has Buffer, Edge has atob
+      // Rollup replaces this with "/_app/immutable/assets/<hash>.wasm"
       return `
-        const b64="${b64}";
-        function b64ToBytes(b){
-          if (typeof atob === 'function') {
-            const s = atob(b);
-            const u = new Uint8Array(s.length);
-            for (let i=0;i<s.length;i++) u[i] = s.charCodeAt(i);
-            return u;
-          }
-          return Uint8Array.from(globalThis.Buffer ? globalThis.Buffer.from(b, 'base64') : []);
+        export const wasmPath = import.meta.ROLLUP_FILE_URL_${refId};
+
+        // Build an absolute URL for the current request (Edge-safe)
+        export function wasmURL(baseOrEvent) {
+          const base = typeof baseOrEvent === 'string'
+            ? baseOrEvent
+            : (baseOrEvent && baseOrEvent.url) || 'http://localhost/';
+          return new URL(wasmPath, base).toString();
         }
-        const wasmBytes = b64ToBytes(b64);
-        export default wasmBytes;
-        export { wasmBytes };
-      `
+
+        // Fetch with request-scoped fetch (required on SvelteKit server/edge)
+        export async function fetchWasm(eventOrFetch, base) {
+          const fetchFn = typeof eventOrFetch === 'function'
+            ? eventOrFetch
+            : (eventOrFetch && eventOrFetch.fetch) || fetch;
+          const url = wasmURL(base || (eventOrFetch && eventOrFetch.url));
+          return fetchFn(url);
+        }
+
+        export default { wasmPath, wasmURL, fetchWasm };
+      `;
+    },
+
+    // Make the asset URL be a web path (not file://)
+    resolveFileUrl({ fileName }) {
+      return `"${'/' + fileName}"`;
     }
-  }
+  };
 }
