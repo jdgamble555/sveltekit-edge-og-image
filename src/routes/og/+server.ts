@@ -2,22 +2,19 @@ import { type RequestHandler } from "@sveltejs/kit";
 import { ImageResponse } from "$lib/image-response";
 import Card from "$lib/card.svelte";
 
-const width = 1600;
-const height = 900;
 
 export const prerender = false;
 
-export const config = {
-	//runtime: 'edge'
-};
 
-export const GET = (async () => {
+export const GET = (async ({ url }) => {
+
+	const { width, height } = Object.fromEntries(url.searchParams);
 
 	return new ImageResponse(
 		Card,
 		{
-			width,
-			height
+			width: Number(width) || 1600,
+			height: Number(height) || 900
 		}
 	);
 
