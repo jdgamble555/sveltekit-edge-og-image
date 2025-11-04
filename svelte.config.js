@@ -4,13 +4,9 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter(),
-		csp: {
-			mode: 'auto',
-			directives: {
-				'script-src': ['self', 'blob:', 'unsafe-eval', 'wasm-unsafe-eval']
-			}
-		}
+		adapter: adapter({
+			external: ['@vercel/og']
+		})
 	}
 };
 
