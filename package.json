@@ -54,6 +54,7 @@
 		"vite-plugin-devtools-json": "^0.2.0",
 		"vite-plugin-top-level-await": "^1.6.0",
 		"vite-plugin-wasm": "^3.5.0",
+		"vite-plugin-wasm-esm": "^1.0.3",
 		"vite-plugin-wasm-module-workers": "^0.0.2",
 		"vitest": "^3.2.3",
 		"vitest-browser-svelte": "^0.1.0",
