@@ -4,7 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 //import wasm from 'vite-plugin-wasm';
 import wasm from 'vite-plugin-wasm-esm';
-//import topLevelAwait from 'vite-plugin-top-level-await';
+import topLevelAwait from 'vite-plugin-top-level-await';
 //import { cloudflare } from "@cloudflare/vite-plugin";
 //import wasmModuleWorkers from 'vite-plugin-wasm-module-workers';	
 
@@ -15,7 +15,7 @@ export default defineConfig({
 		devtoolsJson(),
 		wasm(['@resvg/resvg-wasm']),
 		//wasm(),
-		//topLevelAwait(),
+		topLevelAwait(),
 		//cloudflare()
 	]
 });
