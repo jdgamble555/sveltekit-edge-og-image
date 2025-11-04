@@ -4,6 +4,8 @@ import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import Card from "../src/lib/card.svelte";
 
+export const config = { runtime: 'edge' };
+
 class ImageResponse<T extends Record<string, unknown>> extends VercelOGImageResponse {
     constructor(
         component: Component<T>,
