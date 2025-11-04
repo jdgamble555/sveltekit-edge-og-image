@@ -1,4 +1,4 @@
-import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
+/*import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
@@ -25,4 +25,19 @@ export default async function handler(): Promise<Response> {
     width,
     height
   });
+}*/
+
+import { ImageResponse } from '@vercel/og';
+
+export const config = { runtime: 'edge' };
+
+const width = 1200, height = 630;
+
+export default async function handler() {
+  return new ImageResponse(
+    <div style={{ display: 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
+      Hello 👋
+    </div>,
+    { width, height }
+  );
 }
