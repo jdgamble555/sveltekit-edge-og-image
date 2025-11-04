@@ -27,7 +27,7 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^24.0.3",
-		"@vercel/og": "^0.2.0-beta.0",
+		"@vercel/og": "^0.8.5",
 		"@vitest/browser": "^3.2.3",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
