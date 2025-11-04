@@ -1,0 +1,26 @@
+import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
+import { html } from 'satori-html';
+import type { Component } from 'svelte';
+import { render } from 'svelte/server';
+import Card from "../src/lib/card.svelte";
+
+class ImageResponse<T extends Record<string, unknown>> extends VercelOGImageResponse {
+    constructor(
+        component: Component<T>,
+        options?: ConstructorParameters<typeof VercelOGImageResponse>['1']
+    ) {
+        const result = render(component as Component);
+        const element = html(result.body);
+        super(element, options);
+    }
+}
+
+const width = 1600;
+const height = 900;
+
+export default async function handler(): Promise<Response> {
+  return new ImageResponse(Card, {
+    width,
+    height
+  });
+}
