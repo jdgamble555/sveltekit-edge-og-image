@@ -18,6 +18,6 @@ export default defineConfig({
 		force: true
 	},
 	ssr: {
-		noExternal: ['@vercel/og']
+		//noExternal: ['@vercel/og']
 	}
 });
