@@ -1,5 +1,0 @@
-{
-  "functions": {
-    "api/og-image.ts": { "runtime": "edge" }
-  }
-}
