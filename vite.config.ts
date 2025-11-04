@@ -16,5 +16,8 @@ export default defineConfig({
 	optimizeDeps: {
 		include: ['@vercel/og'],
 		force: true
+	},
+	ssr: {
+		noExternal: ['@vercel/og']
 	}
 });
