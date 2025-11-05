@@ -1,4 +1,4 @@
-import { ImageResponse as VercelOGImageResponse } from '@cloudflare/pages-plugin-vercel-og/api';
+import { ImageResponse as VercelOGImageResponse } from '@vercel/og';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
