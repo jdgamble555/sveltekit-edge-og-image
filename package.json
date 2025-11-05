@@ -14,8 +14,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test",
-		"postinstall": "patch-package"
+		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
 		"@cf-wasm/og": "^0.1.41",
