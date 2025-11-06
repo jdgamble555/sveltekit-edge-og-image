@@ -19,6 +19,5 @@ export default defineConfig({
 		//wasm(),
 		//topLevelAwait()
 		//wasm(['@resvg/resvg-wasm']),
-	],
-	assetsInclude: ['**/*.wasm', '**/*.bin']
+	]
 });
