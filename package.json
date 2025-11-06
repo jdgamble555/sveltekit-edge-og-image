@@ -17,7 +17,7 @@
 		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
-		"@cf-wasm/og": "^0.1.41",
+		"@cf-wasm/og": "^0.2.0",
 		"@cf-wasm/plugins": "^0.1.0",
 		"@cf-wasm/resvg": "^0.2.0",
 		"@cf-wasm/satori": "^0.2.0",
