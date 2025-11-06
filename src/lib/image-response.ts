@@ -2,7 +2,6 @@ import { ImageResponse as OGImageResponse } from '@cf-wasm/og';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
-/* @ts-expect-error - font import */
 import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
 
 import { defaultFont } from '@cf-wasm/og/others';
