@@ -1,4 +1,4 @@
-import { ImageResponse as OGImageResponse } from '@cf-wasm/og';
+import { ImageResponse as OGImageResponse } from '@cf-wasm/og/others';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
