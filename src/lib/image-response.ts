@@ -3,6 +3,12 @@ import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
+import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
+import { initSatori, initYoga } from '@cf-wasm/satori/others';
+
+if (!initSatori.initialized) {
+  initSatori(initYoga(yogaWasmModule));
+}
 
 import { defaultFont } from '@cf-wasm/og/others';
 
