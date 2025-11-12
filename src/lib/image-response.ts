@@ -5,8 +5,8 @@ import { ImageResponse as OGImageResponse } from '@cf-wasm/og/others';
 import { initSatori, initYoga } from '@cf-wasm/satori/others';
 import { initResvg } from '@cf-wasm/resvg/others';
 import { defaultFont } from '@cf-wasm/og/others';
-import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
 import resvgWasmModule from '@cf-wasm/resvg/resvg.wasm?module';
+import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
 import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
 
 if (!initSatori.initialized) {
