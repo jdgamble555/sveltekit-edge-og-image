@@ -10,7 +10,7 @@ export class ImageResponse<T extends Record<string, unknown>> extends OGImageRes
         options?: ConstructorParameters<typeof OGImageResponse>['1']
     ) {
         const result = render(component as Component);
-        const element = t(result.body) as React.ReactElement;
+        const element = t(result.body);
         super(element, options);
     }
 }
