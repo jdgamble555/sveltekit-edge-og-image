@@ -1,4 +1,4 @@
 <h1>Welcome to SvelteKit</h1>
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
 
-<a href="/og">Show Image</a>
+<a href="/og2">Show Image</a>
