@@ -2,11 +2,11 @@ import { ImageResponse as OGImageResponse } from '@cf-wasm/og/others';
 import { html } from 'satori-html';
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
-import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
-import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
 import { initSatori, initYoga } from '@cf-wasm/satori/others';
-import { initResvg } from '@cf-wasm/resvg/legacy/others';
-import resvgWasmModule from '@cf-wasm/resvg/legacy/resvg.wasm?module';
+import { initResvg } from '@cf-wasm/resvg/others';
+import resvgWasmModule from '@cf-wasm/resvg/resvg.wasm?module';
+import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
+import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
 
 if (!initSatori.initialized) {
   initSatori(initYoga(yogaWasmModule));
