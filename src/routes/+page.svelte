@@ -1,4 +1,5 @@
 <script lang="ts">
+	
 	const num = Math.random();
 </script>
 
