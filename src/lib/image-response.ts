@@ -1,4 +1,3 @@
-/*
 import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { defaultFont, ImageResponse as OGImageResponse } from '@cf-wasm/og/others';
@@ -29,7 +28,11 @@ export const ImageResponse = async <T extends Record<string, unknown>>(
     const result = render(component as Component);
     return await OGImageResponse.async(html(result.body), options);
 };
-*/
+
+
+/*
+
+// THIS WORKS TOO, IF YOU PREFER MANUAL SETUP OVER THE WRAPPER
 
 import satori from 'satori';
 import { html as toReactElement } from 'satori-html';
@@ -72,11 +75,6 @@ export const generateImage = async <T extends Record<string, unknown>>(
 ) => {
 
     const { fetch } = getRequestEvent();
-
-
-    if (!initResvg.initialized) {
-        initResvg(resvgWasmModule);
-    }
 
     const { text, spanText } = options;
 
@@ -145,3 +143,4 @@ export class ImageResponse<T extends Record<string, unknown>> extends Response {
         });
     }
 }
+*/
