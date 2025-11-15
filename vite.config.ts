@@ -14,10 +14,6 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		devtoolsJson(),
-		cloudflareModules(),
-		//cloudflare(),
-		//wasm(),
-		//topLevelAwait()
-		//wasm(['@resvg/resvg-wasm']),
+		cloudflareModules()
 	]
 });
