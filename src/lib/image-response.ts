@@ -2,9 +2,9 @@ import type { Component } from 'svelte';
 import { render } from 'svelte/server';
 import { defaultFont, ImageResponse as OGImageResponse } from '@cf-wasm/og/others';
 import { initResvg } from '@cf-wasm/resvg/legacy/others';
-import resvgWasmModule from '@cf-wasm/resvg/legacy/resvg.wasm?module';
 import { initSatori, initYoga } from '@cf-wasm/satori/others';
 import yogaWasmModule from '@cf-wasm/satori/yoga.wasm?module';
+import resvgWasmModule from '@cf-wasm/resvg/legacy/resvg.wasm?module';
 import notoSansFontBuffer from '@cf-wasm/og/noto-sans-v27-latin-regular.ttf.bin';
 import { html } from 'satori-html';
 
