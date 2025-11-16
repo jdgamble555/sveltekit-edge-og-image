@@ -10,6 +10,9 @@ import cloudflareModules from '@cf-wasm/plugins/vite-cloudflare-modules';
 //import wasmModuleWorkers from 'vite-plugin-wasm-module-workers';	
 
 export default defineConfig({
+	ssr: {
+		noExternal: [/@cf-wasm\/.*/]
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
