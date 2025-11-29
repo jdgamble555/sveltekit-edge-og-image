@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import devtoolsJson from 'vite-plugin-devtools-json';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
-import cloudflareModules from '@cf-wasm/plugins/vite-cloudflare-modules';
+import cloudflareModules from '@cf-wasm/plugins/vite-additional-modules';
 
 
 export default defineConfig({
@@ -13,6 +13,6 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		devtoolsJson(),
-		cloudflareModules()
+		cloudflareModules({ target: "edge-light" })
 	]
 });
