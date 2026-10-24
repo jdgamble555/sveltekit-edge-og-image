@@ -11,11 +11,10 @@ SvelteKit configuration now lives in `vite.config.ts`. Library imports use the
 `#lib/*` subpath mapping in `package.json`, with explicit file extensions, following
 the [SvelteKit 3 migration guide](https://svelte.dev/docs/kit/migrating-to-sveltekit-3).
 
-`@cf-wasm/plugins` 0.2.0 declares Vite 6/7 peer support. A targeted npm override
-and the compatibility wrapper in `vite.config.ts` support Vite 8's Rolldown module
-markers and SvelteKit 3's build lifecycle. The wrapper packages native WASM imports
-for Cloudflare and retains inline loaders until Node route analysis completes.
-Revisit this workaround when the plugin officially supports Vite 8.
+Image generation loads `@cf-wasm/og` on demand: the Node entry point during Vite
+development and the Workers entry point in production. This keeps Worker WASM out
+of SvelteKit's Node build analysis and lets Wrangler bundle native WASM imports.
+No WASM Vite plugins or custom adapter hooks are required.
 
 Run `npm run check`, `npm run lint` and `npm test` to validate changes. Before
 running browser tests for the first time, run `npx playwright install chromium`.
