@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "wrangler dev",
+		"deploy": "npm run build && wrangler deploy",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -21,7 +22,6 @@
 		"@cf-wasm/plugins": "^0.2.0",
 		"@cf-wasm/resvg": "^0.4.0",
 		"@cf-wasm/satori": "^0.4.2",
-		"@cloudflare/pages-plugin-vercel-og": "^0.1.2",
 		"@cloudflare/vite-plugin": "^1.65.0",
 		"@eslint/compat": "^2.1.1",
 		"@eslint/js": "^10.0.1",

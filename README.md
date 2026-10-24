@@ -14,7 +14,7 @@ the [SvelteKit 3 migration guide](https://svelte.dev/docs/kit/migrating-to-svelt
 `@cf-wasm/plugins` 0.2.0 declares Vite 6/7 peer support. A targeted npm override
 and the compatibility wrapper in `vite.config.ts` support Vite 8's Rolldown module
 markers and SvelteKit 3's build lifecycle. The wrapper packages native WASM imports
-for Cloudflare and retains inline loaders for Node route analysis and preview.
+for Cloudflare and retains inline loaders until Node route analysis completes.
 Revisit this workaround when the plugin officially supports Vite 8.
 
 Run `npm run check`, `npm run lint` and `npm test` to validate changes. Before
@@ -54,6 +54,22 @@ To create a production version of your app:
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build in the Workers runtime with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Cloudflare Workers
+
+Deployment targets Cloudflare Workers with Static Assets. `wrangler.jsonc` sets
+the Worker entry point, `ASSETS` binding, compatibility date and Node compatibility.
+The Cloudflare adapter uses this configuration to build for Workers.
+
+```bash
+npm run build
+npm run preview
+```
+
+Deploy to your Cloudflare account with `npm run deploy` (authenticate with
+`npx wrangler login` first). The Worker name is `sveltekit-edge-og-image`; change
+`name` in `wrangler.jsonc` to use a different name.
+
+The end-to-end tests run the built app through `wrangler dev`, including PNG
+generation with native WASM modules.

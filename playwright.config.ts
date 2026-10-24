@@ -1,9 +1,9 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-	use: { baseURL: 'http://localhost:4173' },
+	use: { baseURL: 'http://127.0.0.1:4173' },
 	webServer: {
-		command: 'npm run build && npm run preview -- --host localhost --port 4173 --strictPort',
+		command: 'npm run build && npm run preview -- --ip 127.0.0.1 --port 4173 --inspector-port 0',
 		timeout: 120_000,
 		port: 4173
 	},

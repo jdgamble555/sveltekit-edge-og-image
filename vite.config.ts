@@ -6,12 +6,10 @@ import additionalModules from '@cf-wasm/plugins/vite-additional-modules';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { playwright } from '@vitest/browser-playwright';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 
 // Rolldown escapes virtual module IDs as \u0000; the plugin expects \0.
 function wasmModules() {
-	const plugin = additionalModules({ cleanup: false });
+	const plugin = additionalModules();
 	const renderChunk = plugin.renderChunk;
 	if (typeof renderChunk === 'function') {
 		plugin.renderChunk = function (code, chunk, ...args) {
@@ -50,22 +48,9 @@ export default defineConfig({
 				async adapt(builder) {
 					// Keep inline loaders for Kit's Node route analysis; switch to
 					// native WASM imports immediately before packaging for Cloudflare.
-					const serverDir = builder.getServerDirectory();
-					const originals = new Map<string, string>();
-					for (const file of await readdir(serverDir, { recursive: true })) {
-						if (!file.endsWith('.js')) continue;
-						const path = join(serverDir, file);
-						const source = await readFile(path, 'utf8');
-						if (source.includes('.inline.mjs')) originals.set(path, source);
-					}
-					try {
-						if (typeof finalizeModules === 'function')
-							await Reflect.apply(finalizeModules, undefined, []);
-						await cloudflareAdapter.adapt(builder);
-					} finally {
-						// Vite preview runs in Node and still needs the inline loaders.
-						for (const [path, source] of originals) await writeFile(path, source);
-					}
+					if (typeof finalizeModules === 'function')
+						await Reflect.apply(finalizeModules, undefined, []);
+					await cloudflareAdapter.adapt(builder);
 				}
 			},
 			preprocess: vitePreprocess()
