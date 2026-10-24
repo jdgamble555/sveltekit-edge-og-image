@@ -1,10 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 
-
-
 declare global {
-
 	declare module '*.wasm?module' {
 		const module: WebAssembly.Module;
 		export default module;
@@ -36,6 +33,4 @@ declare global {
 	}
 }
 
-
-
-export { };
+export {};

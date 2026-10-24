@@ -1,5 +1,26 @@
 # sv
 
+## Toolchain
+
+Use Node.js 24 LTS (minimum 22.17) and install dependencies with `npm ci`.
+The project uses SvelteKit 3, Svelte 5, Vite 8, Tailwind CSS 4 and Vitest 5.
+TypeScript stays on 6.x because the current `typescript-eslint` release does not
+support TypeScript 7. Node types follow the Node 24 runtime.
+
+SvelteKit configuration now lives in `vite.config.ts`. Library imports use the
+`#lib/*` subpath mapping in `package.json`, with explicit file extensions, following
+the [SvelteKit 3 migration guide](https://svelte.dev/docs/kit/migrating-to-sveltekit-3).
+
+`@cf-wasm/plugins` 0.2.0 declares Vite 6/7 peer support. A targeted npm override
+and the compatibility wrapper in `vite.config.ts` support Vite 8's Rolldown module
+markers and SvelteKit 3's build lifecycle. The wrapper packages native WASM imports
+for Cloudflare and retains inline loaders for Node route analysis and preview.
+Revisit this workaround when the plugin officially supports Vite 8.
+
+Run `npm run check`, `npm run lint` and `npm test` to validate changes. Before
+running browser tests for the first time, run `npx playwright install chromium`.
+The end-to-end tests build the app and verify both the home page and PNG generation.
+
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
 ## Creating a project
